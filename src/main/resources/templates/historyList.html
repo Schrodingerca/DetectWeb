@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>历史记录</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .pagination {
+            display: flex;
+            list-style: none;
+            margin: 10px 0;
+            padding: 0;
+        }
+
+        .pagination li {
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .pagination li.active {
+            font-weight: bold;
+        }
+    </style>
+    <style>
+        .table-hover{
+            text-align: center;
+        }
+        .as .current{
+            width: 600px;
+            text-align: center;
+        }
+        ul::after{
+            content:"";
+            display:block;
+            height:0;
+            clear:both;
+            visibility:hidden;
+        }
+        ul{
+            margin-left: -35px;
+        }
+        .one{
+            margin-left: 15px;
+        }
+        ul a{
+            text-decoration: none;
+            display: inline-block;
+            width: 50px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+
+        }
+        ul li{
+            float: left;
+            background: #ffc0cb;
+            list-style: none;
+            margin: 10px;
+            border-radius: 10px;
+        }
+        #data-table{
+            width: 100%;
+        }
+        #data-table img {
+            width: 90px;
+            height: 60px;
+            position: relative;
+        }
+        table {
+            table-layout:fixed;
+        }
+        table tbody td {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        .imageId {
+            max-width: 10px;
+        }
+    </style>
+    <style>
+        #image-details {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 400px;
+            background-color: #f1f1f1;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #d3d3d3;
+            font-family: Arial, sans-serif;
+        }
+        #details-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        #details-top h4 {
+            margin: 0;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .close-button {
+            cursor: pointer;
+            font-size: 20px;
+            color: #999;
+        }
+
+        .close-button:hover {
+            color: #333;
+        }
+
+        #detail-image {
+            max-width: 50%;
+            height: auto;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+
+        #image-details p {
+            margin: 0 0 10px;
+            color: #555;
+        }
+        .custom-button {
+            /* 共享的按钮样式 */
+            padding: 8px 12px;
+            text-decoration: none;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .delete-button {
+            /* 删除按钮样式 */
+            background-color: #ff6666;
+            color: #fff;
+        }
+
+        .details-button {
+            /* 查看详情按钮样式 */
+            background-color: #66b3ff;
+            color: #fff;
+        }
+    </style>
+    <script>
+        function showDetails(imgFile, classes, imgName, detectTime) {
+            document.getElementById('detail-image').src = imgFile;
+            document.getElementById('detail-classes').innerText = '类别: ' + classes;
+            document.getElementById('detail-name').innerText = '图片名称: ' + imgName;
+            document.getElementById('detail-time').innerText = '检测时间: ' + detectTime;
+
+            // 显示详细信息
+            document.getElementById('image-details').style.display = 'block';
+        }
+        function closeDetails() {
+            // 隐藏详细信息
+            document.getElementById('image-details').style.display = 'none';
+        }
+    </script>
+    <style>
+        #header {
+            text-align: left;
+            background-size: cover;
+            color: #61bfff;
+            position: relative; /* 添加定位，为分割线做准备 */
+            padding-bottom: 1px; /* 添加底部内边距，为分割线留出空间 */
+        }
+
+        #header h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        #header:after {
+            content: '';
+            display: block;
+            width: 20%; /* 分割线宽度 */
+            height: 2px; /* 分割线高度 */
+            background-color: #61bfff; /* 分割线颜色，与文字颜色一致 */
+            margin: 0 auto; /* 水平居中 */
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+<div id="header">
+    <h1>检测历史</h1>
+</div>
+<table id="data-table">
+    <thead>
+    <tr>
+        <th class="imageId">ID</th>
+        <th>图片</th>
+        <th>类别</th>
+        <th>检测结果</th>
+        <th>检测时间</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="ImageList, itemImg:${imgListPageInfo.list}">
+        <td th:text="${itemImg.index+1}"></td>
+        <td><img th:src="${ImageList.imgFile}"></td>
+        <td th:text="${ImageList.classes}"></td>
+        <td th:text="${ImageList.imgName}"></td>
+        <td th:text="${ImageList.detectTime}"></td>
+        <td>
+            <!-- 删除按钮 -->
+            <a th:href="@{/deleteImg(id=${ImageList.id})}"
+               onclick="return confirm('确认删除？')"
+               class="custom-button delete-button">删除</a>
+
+            <!-- 查看详情按钮 -->
+            <a href="javascript:void(0);"
+               th:onclick="showDetails([[${ImageList.imgFile}]],
+                            [[${ImageList.classes}]],
+                            [[${ImageList.imgName}]],
+                            [[${ImageList.detectTime}]])"
+               class="custom-button details-button">查看详情</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div id="image-details" style="display: none;">
+    <div id="details-top">
+        <h4>图片详情</h4>
+        <span class="close-button" onclick="closeDetails()">X</span>
+    </div>
+    <div>
+        <img id="detail-image" class="img-thumbnail">
+    </div>
+    <p id="detail-classes"></p>
+    <p id="detail-name"></p>
+    <p id="detail-time"></p>
+</div>
+<div class="as">
+    <div class="as one">
+        当前第<span th:text="${imgListPageInfo.pageNum}"></span> 页，
+        共<span th:text="${imgListPageInfo.pages}"></span> 页，
+        <span th:text="${imgListPageInfo.total}"></span>条记录
+    </div>
+    <ul class="as current" style="list-style: none">
+        <!--th:if="${imgListPageInfo.hasPreviousPage}"}-->
+        <li th:if="${imgListPageInfo.hasPreviousPage}"}><!--hasPreviousPage默认值为false， 如果有上一页，则不显示首页-->
+            <a th:href="@{/historyList?pageNum=}+${1}">首页</a>
+        </li>
+        <li th:if="${imgListPageInfo.hasPreviousPage}"><!--hasPreviousPage默认值为false， 如果有上一页，则不显示-->
+            <a th:href="@{/historyList?pageNum=}+${imgListPageInfo.prePage}">上一页</a>
+        </li>
+        <li th:if="${imgListPageInfo.hasNextPage}"><!--hasNextPage默认值为false， 如果没有下一页，则不显示-->
+            <a th:href="@{/historyList?pageNum=}+${imgListPageInfo.nextPage}">下一页</a>
+        </li>
+        <li th:if="${imgListPageInfo.pageNum < imgListPageInfo.pages}"><!--如果当前页小于总页数则不显示尾页 -->
+            <a th:href="@{/historyList?pageNum=}+${imgListPageInfo.pages}">尾页</a>
+        </li>
+    </ul>
+</div>
+<!--点击拖动-->
+<script>
+    dragElement(document.getElementById(("image-details")));
+
+    function dragElement(elmnt) {
+        var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        if (document.getElementById(elmnt.id + "header")) {
+            document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+        } else {
+            elmnt.onmousedown = dragMouseDown;
+        }
+
+        function dragMouseDown(e) {
+            e = e || window.event;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            document.onmousemove = elementDrag;
+        }
+
+        function elementDrag(e) {
+            e = e || window.event;
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+            elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        }
+
+        function closeDragElement() {
+            document.onmouseup = null;
+            document.onmousemove = null;
+        }
+    }
+</script>
+</body>
+</html>

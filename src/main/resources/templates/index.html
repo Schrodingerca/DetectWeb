@@ -1,0 +1,129 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>目标检测系统</title>
+	<style>
+		.image-gallery {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+			gap: 15px;
+			padding: 20px;
+		}
+
+		.image-item {
+			position: relative;
+			overflow: hidden; /* 防止图片溢出容器 */
+		}
+
+		.gallery-image {
+			max-width: 100%; /* 限制图片最大宽度 */
+			height: auto; /* 保持图片的纵横比 */
+			transition: transform 0.3s ease; /* 添加平滑放大效果 */
+		}
+
+		.gallery-image:hover {
+			transform: scale(1.1); /* 鼠标悬停时轻微放大图片 */
+		}
+
+		.image-description {
+			position: absolute;
+			bottom: 0;
+			background-color: rgba(0, 0, 0, 0.5);
+			color: white;
+			width: 100%;
+			text-align: center;
+			padding: 5px;
+			display: none;
+		}
+
+		.image-item:hover .image-description {
+			display: block;
+		}
+		.header-content {
+			text-align: center;
+			position: relative; /* 添加定位，为分割线做准备 */
+			color: #61bfff;
+			background-size: cover;
+			padding-bottom: 1px; /* 添加底部内边距，为分割线留出空间 */
+		}
+
+		.header-content h1 {
+			font-size: 3em;
+			margin-bottom: 15px;
+			/* 保持原有的字体颜色设置 */
+		}
+
+		.header-content p {
+			font-size: 1.5em;
+			max-width: 600px;
+			margin: 0 auto 20px; /* 调整底部外边距 */
+			/* 保持原有的字体颜色设置 */
+		}
+
+		.header-content:after {
+			content: '';
+			display: block;
+			width: 50%; /* 分割线宽度 */
+			height: 2px; /* 分割线高度 */
+			background-color: #61bfff; /* 分割线颜色，您可以根据需要调整 */
+			margin: 0 auto; /* 水平居中 */
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			right: 0;
+		}
+	</style>
+</head>
+<body>
+<div class="header-content">
+	<h1>探索先进的目标检测技术</h1>
+	<p>精确、快速、革命性的图像分析解决方案</p>
+</div>
+<div class="image-gallery">
+	<div class="image-item">
+		<img src="img/DetectImg/000000000019.jpg" alt="检测结果1" class="gallery-image">
+		<div class="image-description">草地上的牛</div>
+	</div>
+	<div class="image-item">
+		<img src="img/DetectImg/000000000057.jpg" alt="检测结果2" class="gallery-image">
+		<div class="image-description">正在进行网球运动</div>
+	</div>
+	<div class="image-item">
+		<img src="img/DetectImg/000000000080.jpg" alt="检测结果2" class="gallery-image">
+		<div class="image-description">动物园的斑马</div>
+	</div>
+	<div class="image-item">
+		<img src="img/DetectImg/000000000106.jpg" alt="检测结果2" class="gallery-image">
+		<div class="image-description">展翅的鸟</div>
+	</div>
+	<div class="image-item">
+		<img src="img/DetectImg/000000001097.jpg" alt="检测结果2" class="gallery-image">
+		<div class="image-description">另一个网球运动员</div>
+	</div>
+	<div class="image-item">
+		<img src="img/DetectImg/000000001411.jpg" alt="检测结果2" class="gallery-image">
+		<div class="image-description">停靠的巴士</div>
+	</div>
+	<div class="image-item">
+		<img src="img/DetectImg/000000000809.jpg" alt="检测结果2" class="gallery-image">
+		<div class="image-description">整洁的厨房</div>
+	</div>
+	<div class="image-item">
+		<img src="img/DetectImg/000000009995.jpg" alt="检测结果2" class="gallery-image">
+		<div class="image-description">孤独的消防栓</div>
+	</div>
+	<div class="image-item">
+		<img src="img/DetectImg/000000000009.jpg" alt="检测结果2" class="gallery-image">
+		<div class="image-description">丰盛的早餐</div>
+	</div>
+	<div class="image-item">
+		<img src="img/DetectImg/000000000625.jpg" alt="检测结果2" class="gallery-image">
+		<div class="image-description">飞盘运动</div>
+	</div>
+	<!-- 更多图像... -->
+</div>
+
+</body>
+</html>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--mybatis文件偶尔孩子-->
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.detectweb.mapper.imgListMapper">
+    <select id="queryAllByPage" resultType="com.example.detectweb.pojo.imgList">
+        select id, imgFile, classes, imgName, detectTime from imglist where username=#{username}
+    </select>
+    <select id="selectcategory1" resultType="java.lang.String">
+        select distinct classes from imglist where username=#{username}
+    </select>
+    <insert id="saveImage">
+        insert into photolist(username, category_name, subcategory_name, img_path)
+        values (#{username}, #{bigCategory}, #{shortCategory}, #{filePath})
+    </insert>
+    <select id="queryAll" resultType="com.example.detectweb.pojo.PhotoList">
+        select id, category_name, subcategory_name, img_path from photolist where username=#{username}
+    </select>
+</mapper>

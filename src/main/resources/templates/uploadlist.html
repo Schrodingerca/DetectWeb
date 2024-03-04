@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>uploadlist</title>
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+    }
+    .container {
+        top: 150px;
+    }
+    input[type=text], input[type=password] {
+        width: 50%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+    }
+    button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        cursor: pointer;
+        width: 50%;
+    }
+    button:hover {
+        opacity: 0.8;
+    }
+</style>
+<body>
+<div class="container">
+    <form th:action="@{/upload/user}">
+        <label ><b>用户名：</b></label>
+        <input type="text" placeholder="输入用户名" name="uname" required>
+        <br>
+        <label ><b>密码：</b></label>
+        <input type="password" placeholder="输入密码" name="psw" required>
+        <br>
+        <label ><b>确认密码：</b></label>
+        <input type="password" placeholder="再次输入密码" name="psw-repeat" required>
+        <button type="submit">提交</button>
+    </form>
+</div>
+</body>
+</html>

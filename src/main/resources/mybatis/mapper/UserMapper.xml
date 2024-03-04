@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--mybatis文件偶尔孩子-->
+<!DOCTYPE mapper
+      PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.detectweb.mapper.userMapper">
+    <select id="chekuser" resultType="String">
+        select password from user where username = #{username}
+    </select>
+    <select id="checkAllUsers" resultType="String">
+        SELECT username FROM user
+    </select>
+    <insert id="registerUser">
+        insert into user(username, password) values (#{username}, #{password})
+    </insert>
+    <update id="uploadUser">
+        update user set username = #{username} where username = #{newname} and password = #{newpassword}
+    </update>
+
+</mapper>

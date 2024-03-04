@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--mybatis文件偶尔孩子-->
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.detectweb.mapper.photoMapper">
+    <select id="getCategoryPhotos" resultType="com.example.detectweb.pojo.PhotoPath">
+        select * from photopath where username=#{username} and category_id=#{category_id}
+    </select>
+    <select id="getPhotos" resultType="com.example.detectweb.pojo.PhotoPath">
+        select * from photopath where username=#{username} and category_id=#{category} and subcategory_id=#{subcategory}
+    </select>
+    <select id="getAllPhotos" resultType="com.example.detectweb.pojo.PhotoPath">
+        select * from photopath where username=#{username}
+    </select>
+    <insert id="addPhoto">
+        insert into photopath(username,category_id,subcategory_id,imgPath)
+        values (#{username}, #{Category_id}, #{subCategory_id}, #{filePath})
+    </insert>
+    <delete id="deletePhotopath">
+        delete from photopath
+               where username=#{username}
+               and imgPath=#{imgPath}
+    </delete>
+    <delete id="DelPhoto">
+        delete from photolist
+               where username=#{username}
+               and img_path=#{imgPath}
+    </delete>
+</mapper>

@@ -1,0 +1,126 @@
+body{
+    font-family: Arial, sans-serif;
+}
+#navbar {
+    background: linear-gradient(to right, #174d8a, #4d0c94); /* 添加渐变背景 */
+    color: #fff;
+    padding: 9px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom-left-radius: 10px; /* 左下角圆角 */
+    border-bottom-right-radius: 10px; /* 右下角圆角 */
+}
+
+#navbar h1 {
+    margin: 0;
+}
+#content {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #fff; /* 可选：为内容区域添加背景颜色 */
+}
+.preview-box {
+    width: 45%;
+    padding: 10px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px solid #ccc; /* 增加边框粗细 */
+    background-color: #f8f8f8; /* 轻微灰色背景 */
+}
+.preview-img::before {
+    color: #aaa;
+    font-size: 16px;
+}
+/* 按钮和链接的交互效果 */
+button:hover, .dropdown-content a:hover {
+    background-color: #174d8a;
+    color: #fff;
+}
+.preview-box img {
+    max-width: 100%;
+    max-height: 200px;
+}
+#left-preview, #right-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#left-preview button, #right-preview textarea {
+    width: 100%;
+    margin-top: 10px;
+}
+.preview-img {
+    width: 327px;
+    height: 195px;
+    border: 2px dashed #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 25px;
+}
+.avatar {
+    width: 40px; /* 头像大小 */
+    height: 40px;
+    border-radius: 50%; /* 圆形头像 */
+    margin-right: 10px; /* 与用户名的间距 */
+}
+.user-content{
+    width: 40px;
+    height: 40px;
+}
+.name-style {
+    font-weight: bold; /* 字体加粗 */
+    color: #fff; /* 字体颜色 */
+}
+/* 外层容器样式 */
+.dropdown {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 5px; /* 边框圆角 */
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%; /* 位于触发元素的下方 */
+    left: -67px;
+    background-color: #f9f9f9;
+    min-width: 130px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+
+/* 当鼠标悬停在头像上时显示下拉菜单 */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.userimage {
+    left: 10px;
+}
+/* 适应性调整 */
+@media screen and (max-width: 600px) {
+    .dropdown {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .avatar {
+        margin-bottom: 10px;
+    }
+}

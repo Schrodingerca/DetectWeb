@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>目标检测系统</title>
+    <link th:href="@{/css/detect.css}" rel="stylesheet" type="text/css">
+</head>
+<style>
+    #header {
+        text-align: center;
+        background-size: cover;
+        color: #61bfff;
+        position: relative; /* 添加定位，为分割线做准备 */
+        padding-bottom: 20px; /* 添加底部内边距，为分割线留出空间 */
+    }
+
+    #header h1 {
+        font-size: 3em;
+        margin-bottom: 15px;
+    }
+
+    #header p {
+        font-size: 1.5em;
+        max-width: 600px;
+        margin: 0 auto -8px;
+    }
+
+    #header:after {
+        content: '';
+        display: block;
+        width: 50%; /* 分割线宽度 */
+        height: 2px; /* 分割线高度 */
+        background-color: #61bfff; /* 分割线颜色，与文字颜色一致 */
+        margin: 0 auto; /* 水平居中 */
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+
+</style>
+<script>
+    function previewFile() {
+        const preview = document.querySelector('img');
+        const file = document.querySelector('input[type=file]').files[0];
+        const reader = new FileReader();
+
+        reader.addEventListener("load", () => {
+            preview.src = reader.result;
+        }, false);
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
+<body>
+<div id="header">
+    <h1>立即进行图像检测</h1>
+    <p>选择您的图片文件，点击上传进行检测</p>
+</div>
+<div>
+    <h1 th:text="${error}" style="text-align: center"></h1>
+</div>
+<div id="content">
+    <div class="preview-box" id="left-preview">
+        <form th:action="@{/DetectImage}" method="post" enctype="multipart/form-data">
+                <div id="left-image-preview">
+                    <div class="preview-img" id="left-img">
+                        <img th:src="${img0}">
+                    </div>
+                </div>
+            <input name="image" type="file" onchange="previewFile()">
+<!--                <input name="image" type="file" accept="image/*" id="inputFile">-->
+                <input type="submit" value="提交" id="left-detect-buttol">
+        </form>
+    </div>
+    <div class="preview-box" id="right-preview">
+        <div id="right-image-preview">
+            <div class="preview-img" id="right-img">
+                <img th:src="${base64Image}" alt="">
+            </div>
+        </div>
+        检测结果：<p th:text="${label}"></p>
+    </div>
+</div>
+</body>
+</html>

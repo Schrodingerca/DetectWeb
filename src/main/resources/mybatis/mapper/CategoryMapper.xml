@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--mybatis文件偶尔孩子-->
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.detectweb.mapper.CategoryMapper">
+    <select id="getAllCategories" resultType="com.example.detectweb.pojo.Category">
+        select * from category where username=#{username}
+    </select>
+    <select id="findBigKinds" resultType="com.example.detectweb.pojo.Subcategory">
+        select * from subcategory where category_id=#{bigKinds} and username=#{username}
+    </select>
+    <select id="selectCategory" resultType="String">
+        select name from category where username=#{username}
+    </select>
+    <select id="selectImgName" resultType="String">
+        select name from subcategory where username=#{username} and name=#{img_name}
+    </select>
+    <insert id="addCategory">
+        insert into category(username, name) values (#{username}, #{category_name})
+    </insert>
+    <select id="selectCategory_id" resultType="int">
+        select id from category where username=#{username} and name=#{category_name}
+    </select>
+    <insert id="addImgName">
+        insert into subcategory(username, name, category_id) values (#{username}, #{img_name}, #{category_id})
+    </insert>
+    <select id="getAllSubcategory" resultType="String">
+        select name from subcategory where category_id=#{category_id} and username=#{username}
+    </select>
+    <select id="selectsubCategory" resultType="Int">
+        select COUNT(*) from subcategory where category_id=#{category_id} and username=#{username}
+    </select>
+    <delete id="deletePhotopath">
+        DELETE FROM photopath
+               WHERE subcategory_id
+                    IN (SELECT id FROM subcategory WHERE category_id=#{category_id} and username=#{username})
+    </delete>
+    <delete id="deletesubCategory">
+        delete from subcategory where category_id=#{category_id} and username=#{username}
+    </delete>
+    <delete id="deleteCategory">
+        delete from category where name=#{category_name} and username=#{username}
+    </delete>
+    <update id="updateCategory">
+        update category set name=#{NewName} where name=#{OldName} and username=#{username}
+    </update>
+    <select id="selectNewsubCategory" resultType="int">
+        select count(*)
+        from subcategory
+        where category_id=#{category_id} and name=#{newName} and username=#{username}
+    </select>
+    <update id="updateSubCategory">
+        update subcategory
+        set name=#{NewSubName}
+        where username=#{username} and category_id=#{category_id} and name=#{OldSubName}
+    </update>
+    <insert id="addSubCategory">
+        insert into subcategory(username, name, category_id) values (#{username}, #{NewSubName}, #{category_id})
+    </insert>
+    <select id="selectSubCategory_id" resultType="int">
+        select id from subcategory where username=#{username} and category_id=#{category_id} and name=#{subCategory_name}
+    </select>
+    <select id="getCategoryName" resultType="String">
+        select name
+        from category
+        where id=#{category_id} and username=#{username};
+    </select>
+    <select id="getsubCategoryName" resultType="String">
+        select name
+        from subcategory
+        where id=#{Subcategory_id} and username=#{username};
+    </select>
+</mapper>

@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link th:href="@{/css/detect.css}" rel="stylesheet" type="text/css">
+  <title>图片查询页面</title>
+  <script src="/jquery.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      margin: 20px;
+    }
+
+    h1 {
+      color: #007bff;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid #dee2e6;
+      padding: 10px;
+      text-align: left;
+    }
+
+    #searchContainer {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      margin-bottom: -10px;
+      flex-direction: row;
+      flex-wrap: nowrap;
+    }
+
+    #selectKinds {
+      display: flex;
+      width: 40%;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: space-around;
+    }
+  </style>
+  <style>
+    /* 下拉框样式 */
+    select {
+      min-width: 169px;
+      padding: 8px;
+      margin: 5px 0;
+      box-sizing: border-box;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      background-color: #fff;
+    }
+
+    /* 设置选中项的样式 */
+    option:checked {
+      background-color: #007bff;
+      color: #fff;
+    }
+
+    /* 调整两个下拉框的样式 */
+    #selectBigKinds, #selectShortKinds {
+      margin-bottom: -4px;
+    }
+    #tab tr td img{
+      width: 100px;
+    }
+    #tab tr td a{
+      cursor: pointer;
+      text-decoration: underline;
+      color: #0066cc;
+    }
+    #table, img {
+      max-width: 100%;
+      max-height: 50px;
+    }
+  </style>
+  <style>
+    #image-details {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 400px;
+      background-color: #f1f1f1;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      border-radius: 8px;
+      text-align: center;
+      border: 1px solid #d3d3d3;
+      font-family: Arial, sans-serif;
+    }
+    #image-details-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    #image-details-title h4 {
+      margin: 0;
+      font-size: 18px;
+      color: #333;
+    }
+
+    .close-button {
+      cursor: pointer;
+      font-size: 20px;
+      color: #999;
+    }
+
+    .close-button:hover {
+      color: #333;
+    }
+
+    #detail-image {
+      max-width: 100%;
+      max-height: 100%;
+      height: auto;
+      margin-bottom: 15px;
+      border-radius: 4px;
+    }
+
+    #image-details p {
+      margin: 0 0 10px;
+      color: #555;
+    }
+    .custom-button {
+      /* 共享的按钮样式 */
+      padding: 8px 12px;
+      text-decoration: none;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .delete-button {
+      /* 删除按钮样式 */
+      background-color: #ff6666;
+      color: #fff;
+    }
+
+    .details-button {
+      /* 查看详情按钮样式 */
+      background-color: #66b3ff;
+      color: #fff;
+    }
+  </style>
+  <style>
+    #image-details {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 400px;
+      background-color: #f1f1f1;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      border-radius: 8px;
+      text-align: center;
+      border: 1px solid #d3d3d3;
+      font-family: Arial, sans-serif;
+    }
+    #details-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    #details-top h4 {
+      margin: 0;
+      font-size: 18px;
+      color: #333;
+    }
+
+    .close-button {
+      cursor: pointer;
+      font-size: 20px;
+      color: #999;
+    }
+
+    .close-button:hover {
+      color: #333;
+    }
+
+    #detail-image {
+      max-width: 50%;
+      height: auto;
+      margin-bottom: 15px;
+      border-radius: 4px;
+    }
+
+    #image-details p {
+      margin: 0 0 10px;
+      color: #555;
+    }
+    .custom-button {
+      /* 共享的按钮样式 */
+      padding: 8px 12px;
+      text-decoration: none;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .delete-button {
+      /* 删除按钮样式 */
+      background-color: #ff6666;
+      color: #fff;
+    }
+
+    .details-button {
+      /* 查看详情按钮样式 */
+      background-color: #66b3ff;
+      color: #fff;
+    }
+  </style>
+  <style>
+    .input-image {
+      position: absolute;
+      width: 7%;
+      height: 37px;
+      right: 75px;
+      border-radius: 5px;
+      border-width: thin;
+    }
+    #add-image {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      max-width: 400px;
+      width: 100%;
+      border-radius: 17px;
+    }
+
+    #add-image-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    }
+
+    #add-image-title h5 {
+      margin: 0;
+      font-size: 1.2em; /* 增大字体大小 */
+      color: #333; /* 深色字体 */
+    }
+
+    .close-button {
+      cursor: pointer;
+      color: #555;
+      font-size: 18px;
+    }
+
+    .close-button:hover {
+      color: #000;
+    }
+
+    .main {
+      display: grid;
+      gap: 10px;
+    }
+
+    #left-image-preview {
+      border: 1px dashed #ccc; /* 虚线边框 */
+      background-color: #f8f8f8; /* 轻微灰色背景 */
+      padding: 10px;
+      text-align: center;
+    }
+    input[type="file"] {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      width: 96%;
+    }
+    .preview-img {
+      max-width: 94%;
+    }
+    #preview-img{
+      max-width: 100%;
+      max-height: 100%;
+    }
+    #addImg-select {
+      margin-bottom: 0;
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: space-evenly;
+    }
+    select {
+      padding: 5px 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      background-color: #fff;
+    }
+    #add-image-button {
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      padding: 10px 15px;
+      font-size: 1em;
+      transition: all 0.3s ease;
+    }
+
+    #add-image-button:hover {
+      background-color: #45a049;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      transform: scale(1.05);
+    }
+
+  </style>
+  <style>
+    .table-hover{
+      text-align: center;
+    }
+    .as .current{
+      width: 600px;
+      text-align: center;
+    }
+    ul::after{
+      content:"";
+      display:block;
+      height:0;
+      clear:both;
+      visibility:hidden;
+    }
+    ul{
+      margin-left: -35px;
+    }
+    .one{
+      margin-left: 15px;
+    }
+    ul a{
+      text-decoration: none;
+      display: inline-block;
+      width: 50px;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+
+    }
+    ul li{
+      float: left;
+      background: #ffc0cb;
+      list-style: none;
+      margin: 10px;
+      border-radius: 10px;
+    }
+    #data-table{
+      width: 100%;
+    }
+    #data-table img {
+      width: 90px;
+      height: 60px;
+      position: relative;
+    }
+    table {
+      table-layout:fixed;
+    }
+    table tbody td {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .imageId {
+      max-width: 10px;
+    }
+  </style>
+<!--  获取图片表格内容-->
+  <script>
+    function showAddImage() {
+      document.getElementById('add-image').style.display = 'block';
+    }
+    function closeUpdate(){
+      document.getElementById('add-image').style.display = 'none';
+    }
+    function previewFile() {
+      let preview = document.getElementById('preview-img');
+      let file = document.querySelector('input[type=file]').files[0];
+      let reader = new FileReader();
+      reader.addEventListener("load", () => {
+        preview.src = reader.result;
+      }, false);
+      if (file) {
+        reader.readAsDataURL(file);
+      }
+    }
+    function findphoto() {
+      // 获取表格主体的引用
+      var tableBody = document.getElementById("table");
+
+      if (tableBody) {
+        // 清空表格主体中的现有内容
+        tableBody.innerHTML = "";
+      } else {
+        console.error('未找到表格主体元素');
+      }
+
+      // 获取类别下拉框的选中项
+      let bigKindsSelect = document.getElementById("bigKindsSelect");
+      let index = bigKindsSelect.selectedIndex;
+      let bigKinds = bigKindsSelect.options[index].id;
+
+      let shortKindsSelect = document.getElementById("shortKindsSelect");
+      let shortIndex = shortKindsSelect.selectedIndex;
+      let shortKinds = shortKindsSelect.options[shortIndex].id;
+
+      // 创建表头
+      let table = document.getElementById("table");
+      let thead = table.createTHead();
+      let headerRow = thead.insertRow();
+
+      // 添加表头单元格
+      let th1 = document.createElement("th");
+      th1.innerHTML = "类别";
+      headerRow.appendChild(th1);
+
+      let th2 = document.createElement("th");
+      th2.innerHTML = "名称";
+      headerRow.appendChild(th2);
+
+      let th3 = document.createElement("th");
+      th3.innerHTML = "图片";
+      headerRow.appendChild(th3);
+
+      let th4 = document.createElement("th");
+      th4.innerHTML = "操作";
+      headerRow.appendChild(th4);
+
+      $.post("/findPhoto?category="+bigKinds+"&subcategory="+shortKinds,function (data){
+        let oneRow;
+        let cell
+        for (let i = 0; i<data.list.length ; i++) {
+          oneRow = table.insertRow();
+          cell = oneRow.insertCell();
+          cell.innerHTML = data.list[i].category_name;
+          cell = oneRow.insertCell();
+          cell.innerHTML = data.list[i].subcategory_name;
+          cell = oneRow.insertCell();
+          var img = document.createElement('img');
+          img.src = data.list[i].img_path;
+          cell.appendChild(img);
+          cell = oneRow.insertCell();
+
+          let link_a = '<a href="/photoDetail?id=' + data.list[i].id + '" class="custom-button details-button">详情</a>';
+          let tempDiv = document.createElement('div');
+          tempDiv.innerHTML = link_a;
+          cell.appendChild(tempDiv.firstChild);
+
+          var space = document.createTextNode('\u00A0'); // 使用 '\u00A0' 表示空格
+          cell.appendChild(space);
+
+          link_a = '<a href="/photodelete?imgPath=' + data.list[i].img_path + '' +
+                  '" class="custom-button delete-button"'+
+                  ' onclick="return confirm(\'确定要删除吗？\')">删除</a>';
+          tempDiv.innerHTML = link_a;
+          cell.appendChild(tempDiv.firstChild);
+        }
+        document.getElementById('as').style.display = 'none';
+      })
+    }
+    function uploadFile() {
+      var fileInput = document.getElementById('up-image');
+      var bigKindsSelect = document.getElementById('addImg-bigKindsSelect');
+      var shortKindsSelect = document.getElementById('addImg-shortKindsSelect');
+
+      var file = fileInput.files[0];
+      var bigCategory = bigKindsSelect.value;
+      var shortCategory = shortKindsSelect.value;
+
+      var formData = new FormData();
+      formData.append('file', file);
+      formData.append('bigCategory', bigCategory);
+      formData.append('shortCategory', shortCategory);
+
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/addPhoto', true);
+
+      xhr.onload = function () {
+
+          alert('上传成功');
+          replaceDoc();
+      };
+      xhr.send(formData);
+      var addImg = document.getElementById('add-image');
+      addImg.style.display = 'none';
+    }
+    // 页面刷新
+    function replaceDoc(){
+      window.location.replace('/selectPhoto');
+    }
+    function showDetails(category_name, subcategory_name, img_path) {
+      document.getElementById('detail-image').src = img_path;
+      document.getElementById('detail-classes').innerText = '类别: ' + category_name;
+      document.getElementById('detail-name').innerText = '图片名称: ' + subcategory_name;
+
+      // 显示详细信息
+      document.getElementById('image-details').style.display = 'block';
+    }
+    function closeDetails() {
+      // 隐藏详细信息
+      document.getElementById('image-details').style.display = 'none';
+    }
+  </script>
+<!--  删除图片-->
+  <script>
+    function confirmDelete(img_path) {
+      var result = confirm("确定要删除吗？");
+      if (!result) {
+        // 用户点击了取消，阻止默认行为（链接的跳转）
+        event.preventDefault();
+      }else{
+        var formData = new FormData();
+        formData.append('imgPath', img_path);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/photodelete', true);
+
+        xhr.onload = function () {
+            alert('删除成功');
+            replaceDoc();
+        };
+        xhr.send(formData);
+      }
+    }
+  </script>
+<!--  获取下拉列表-->
+  <script>
+    function find_Category() {
+      let bigKindsSelect = document.getElementById("addImg-bigKindsSelect");
+      let index = bigKindsSelect.selectedIndex;
+      let bigKinds = bigKindsSelect.options[index].id;
+      $.post("/findKinds?bigKinds=" + bigKinds, function (data) {
+        let contain = "<option>请选择</option>";
+        console.log(data);
+        let len = data.length;
+        for (let i = 0; i < data.length; i++) {
+          contain += "<option id=";
+          contain += data[i].id.toString();
+          contain += ">";
+          contain += data[i].name;
+          contain += "</option>";
+        }
+        $("#addImg-shortKindsSelect").html(contain);
+      }, "json");
+    }
+  </script>
+<!--  下拉查询逻辑-->
+  <script>
+    function findCategory() {
+      let bigKindsSelect = document.getElementById("bigKindsSelect");
+      let index = bigKindsSelect.selectedIndex;
+      let bigKinds = bigKindsSelect.options[index].id;
+      $.post("/findKinds?bigKinds=" + bigKinds, function (data) {
+        let contain = "<option>请选择</option>";
+        console.log(data);
+        let len = data.length;
+        for (let i = 0; i < data.length; i++) {
+          contain += "<option id=";
+          contain += data[i].id.toString();
+          contain += ">";
+          contain += data[i].name;
+          contain += "</option>";
+        }
+        $.post("/getPhoto?category_id="+bigKinds), function (data) {
+          if(data.length>0){
+            for (let i = 0; i < data.length; i++) {
+              contain += "<option id=";
+              contain += data[i].id.toString();
+              contain += ">";
+              contain += data[i].name;
+              contain += "<";
+              contain += "</option>";
+            }
+          }
+        }
+        $("#shortKindsSelect").html(contain);
+      }, "json");
+    }
+    function findphoto() {
+      // 获取表格主体的引用
+      var tableBody = document.getElementById("table");
+
+      if (tableBody) {
+        // 清空表格主体中的现有内容
+        tableBody.innerHTML = "";
+      } else {
+        console.error('未找到表格主体元素');
+      }
+
+      // 获取类别下拉框的选中项
+      let bigKindsSelect = document.getElementById("bigKindsSelect");
+      let index = bigKindsSelect.selectedIndex;
+      let bigKinds = bigKindsSelect.options[index].id;
+
+      let shortKindsSelect = document.getElementById("shortKindsSelect");
+      let shortIndex = shortKindsSelect.selectedIndex;
+      let shortKinds = shortKindsSelect.options[shortIndex].id;
+
+      // 创建表头
+      let table = document.getElementById("table");
+      let thead = table.createTHead();
+      let headerRow = thead.insertRow();
+
+      // 添加表头单元格
+      let th1 = document.createElement("th");
+      th1.innerHTML = "类别";
+      headerRow.appendChild(th1);
+
+      let th2 = document.createElement("th");
+      th2.innerHTML = "名称";
+      headerRow.appendChild(th2);
+
+      let th3 = document.createElement("th");
+      th3.innerHTML = "图片";
+      headerRow.appendChild(th3);
+
+      let th4 = document.createElement("th");
+      th4.innerHTML = "操作";
+      headerRow.appendChild(th4);
+
+      $.post("/findPhoto?category="+bigKinds+"&subcategory="+shortKinds,function (data){
+        let oneRow;
+        let cell
+        for (let i = 0; i<data.list.length ; i++) {
+          oneRow = table.insertRow();
+          cell = oneRow.insertCell();
+          cell.innerHTML = data.list[i].category_name;
+          cell = oneRow.insertCell();
+          cell.innerHTML = data.list[i].subcategory_name;
+          cell = oneRow.insertCell();
+          var img = document.createElement('img');
+          img.src = data.list[i].img_path;
+          cell.appendChild(img);
+          cell = oneRow.insertCell();
+
+          let link_a = '<a href="/photoDetail?id=' + data.list[i].id + '" class="custom-button details-button">详情</a>';
+          let tempDiv = document.createElement('div');
+          tempDiv.innerHTML = link_a;
+          cell.appendChild(tempDiv.firstChild);
+
+          var space = document.createTextNode('\u00A0'); // 使用 '\u00A0' 表示空格
+          cell.appendChild(space);
+
+          tempDiv.innerHTML = '<input type="submit" onclick="confirmDelete(\'' + data.list[i].img_path + '\')"\n' +
+                  '         class="custom-button delete-button" value="删除">';
+          cell.appendChild(tempDiv.firstChild);
+
+          space = document.createTextNode('\u00A0');
+          cell.appendChild(space);
+
+          link_a = '<a href="' + data.list[i].img_path + '" download="downloaded_image.jpg"' +
+                  ' class="custom-button update-button">下载</a>';
+          tempDiv.innerHTML += link_a;
+          cell.appendChild(tempDiv.firstChild);
+        }
+      })
+    }
+  </script>
+  <!--点击拖动-->
+  <script>
+    dragElement(document.getElementById(("image-details")));
+    dragElement(document.getElementById(("add-image")));
+
+    function dragElement(elmnt) {
+      if(elmnt) {
+        var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        if (document.getElementById(elmnt.id + "-title")) {
+          document.getElementById(elmnt.id + "-title").onmousedown = dragMouseDown;
+        } else {
+          elmnt.onmousedown = dragMouseDown;
+        }
+      }
+      function dragMouseDown(e) {
+        e = e || window.event;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+      }
+
+      function elementDrag(e) {
+        e = e || window.event;
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+      }
+
+      function closeDragElement() {
+        document.onmouseup = null;
+        document.onmousemove = null;
+      }
+    }
+  </script>
+</head>
+<body>
+<h1>图片管理</h1>
+
+<div id="searchContainer">
+  <div id="selectKinds">
+    <!-- 类别下拉 -->
+    <div id="selectBigKinds">
+      <select name="bigKindsSelect" id="bigKindsSelect" onchange="findCategory()">
+        <option>请选择类别</option>
+        <option th:each="category : ${category}"
+                th:id="${category.id}"
+                th:text="${category.name}"></option>
+      </select>
+    </div>
+    <div id="selectShortKinds">
+      <select name="shortKindsSelect" id="shortKindsSelect"></select>
+    </div>
+    <button onclick="findphoto()" class="select-photo">查询</button>
+    <button onclick="showAddImage()" class="input-image">图片上传</button>
+  </div>
+</div>
+
+<!--添加图片-->
+<div id="add-image" style="display: none">
+  <div id="add-image-title">
+    <h5>图片添加</h5>
+    <span class="close-button" onclick="closeUpdate()">X</span>
+  </div>
+  <div class="main">
+    <div>
+      <input name="up-image" id="up-image" type="file" onchange="previewFile()" >
+      <div id="left-image-preview">
+        <div class="preview-img" id="left-img">
+          <img id="preview-img">
+        </div>
+      </div>
+    </div>
+    <div id="addImg-select">
+      <div id="addImg-selectBigKinds">
+        <select name="bigKindsSelect" id="addImg-bigKindsSelect" onchange="find_Category()">
+          <option>请选择类别</option>
+          <option th:each="allCategory : ${allCategory}"
+                  th:id="${allCategory.id}"
+                  th:text="${allCategory.name}"></option>
+        </select>
+      </div>
+      <div id="addImg-selectShortKinds">
+        <select name="shortKindsSelect" id="addImg-shortKindsSelect">
+          <option>请选择</option>
+        </select>
+      </div>
+    </div>
+    <input type="submit" onclick="uploadFile()" value="提交" id="add-image-button">
+  </div>
+</div>
+
+<!-- 表格正文内容 -->
+<table id="table">
+  <thead>
+  <tr>
+    <th>序号</th>
+    <th>类别</th>
+    <th>名称</th>
+    <th>图片</th>
+    <th>操作</th>
+  <tr th:each="photolist, itemImg:${photoLists.list}">
+    <td th:text="${itemImg.index+1}"></td>
+    <td th:text="${photolist.category_name}"></td>
+    <td th:text="${photolist.subcategory_name}"></td>
+    <td>
+      <img th:src="${photolist.img_path}">
+    </td>
+    <td>
+      <a href="javascript:void(0);"
+         th:onclick="showDetails([[${photolist.category_name}]],
+                            [[${photolist.subcategory_name}]],
+                            [[${photolist.img_path}]])"
+         class="custom-button details-button">查看</a>
+      <input type="submit" th:onclick="return confirmDelete([[${photolist.img_path}]])"
+         class="custom-button delete-button" value="删除">
+      <a th:href="@{${photolist.img_path}}" download="downloaded_image.jpg"
+         class="custom-button update-button">下载</a>
+    </td>
+  </tr>
+  </thead>
+</table>
+<!--图片详情-->
+<div id="image-details" style="display: none;">
+  <div id="image-details-title">
+    <h4>图片详情</h4>
+    <span class="close-button" onclick="closeDetails()">X</span>
+  </div>
+  <div>
+    <img id="detail-image" class="img-thumbnail">
+  </div>
+  <p id="detail-classes"></p>
+  <p id="detail-name"></p>
+  <p id="detail-time"></p>
+</div>
+<div id="as">
+  <div class="as one">
+    当前第<span th:text="${photoLists.pageNum}"></span> 页，
+    共<span th:text="${photoLists.pages}"></span> 页，
+    <span th:text="${photoLists.total}"></span>条记录
+  </div>
+  <ul class="as current" style="list-style: none">
+    <!--th:if="${photoLists.hasPreviousPage}"}-->
+    <li th:if="${photoLists.hasPreviousPage}"}><!--hasPreviousPage默认值为false， 如果有上一页，则不显示首页-->
+      <a th:href="@{/selectPhoto?pageNum=}+${1}">首页</a>
+    </li>
+    <li th:if="${photoLists.hasPreviousPage}"><!--hasPreviousPage默认值为false， 如果有上一页，则不显示-->
+      <a th:href="@{/selectPhoto?pageNum=}+${photoLists.prePage}">上一页</a>
+    </li>
+<!--    <li th:each="nav:${photoLists.navigatepageNums}">&lt;!&ndash;navigatepageNums是一个数组：遍历所有导航页号。 &ndash;&gt;-->
+<!--      <a th:href="@{/selectPhoto?pageNum=}+${nav}" th:text="${nav}" th:if="${nav != photoLists.pageNum}"></a>&lt;!&ndash;如果不是当前页则可以跳转其他页面。遍历展示&ndash;&gt;-->
+<!--      <a th:class="${'active'}" th:if="${nav == photoLists.pageNum}" th:text="${nav}"></a>&lt;!&ndash;如果是当前页则有样式。遍历 展示&ndash;&gt;-->
+<!--    </li>-->
+    <li th:if="${photoLists.hasNextPage}"><!--hasNextPage默认值为false， 如果没有下一页，则不显示-->
+      <a th:href="@{/selectPhoto?pageNum=}+${photoLists.nextPage}">下一页</a>
+    </li>
+    <li th:if="${photoLists.pageNum < photoLists.pages}"><!--如果当前页小于总页数则不显示尾页 -->
+      <a th:href="@{/selectPhoto?pageNum=}+${photoLists.pages}">尾页</a>
+    </li>
+  </ul>
+</div>
+</body>
+</html>

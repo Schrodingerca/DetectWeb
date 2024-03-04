@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link href="/css/detect.css" rel="stylesheet" type="text/css">
+    <link href="/css/index.css" rel="stylesheet" type="text/css">
+    <script src="/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            // 显示登录表单
+            $("#index").show();
+            $("#detect").hide();
+            $("#historyList").hide();
+            $("#select-photo").hide();
+            $("#manage-photo").hide();
+
+            $("#indexClick").click(function(){
+                $("#index").show();
+                $("#detect").hide();
+                $("#historyList").hide();
+                $("#select-photo").hide();
+                $("#manage-photo").hide();
+            });
+            $("#detectClick").click(function(){
+                $("#detect").show();
+                $("#index").hide();
+                $("#select-photo").hide();
+                $("#manage-photo").hide();
+                $("#historyList").hide();
+            });
+            $("#historyClick").click(function(){
+                $("#historyList").show();
+                $("#index").hide();
+                $("#detect").hide();
+                $("#select-photo").hide();
+                $("#manage-photo").hide();
+            });
+            $("#select-photo-click").click(function(){
+                $("#select-photo").show();
+                $("#index").hide();
+                $("#detect").hide();
+                $("#historyList").hide();
+                $("#manage-photo").hide();
+            });
+            $("#manage-photo-click").click(function(){
+                $("#manage-photo").show();
+                $("#index").hide();
+                $("#detect").hide();
+                $("#historyList").hide();
+                $("#select-photo").hide();
+            });
+        });
+    </script>
+    <style>
+        .item-title {
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+            min-height: 40px;
+            border-bottom: 2px solid #ccc;
+        }
+        .item-title:hover {
+            background-color: #7e7c7c; /* 设置鼠标悬停时的背景颜色 */
+            color: #fdfcfc; /* 设置鼠标悬停时的文本颜色 */
+
+        }
+        .item_img {
+            width: 26px;
+            height: 26px;
+        }
+        .item2-title {
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+            min-height: 30px;
+            border-bottom: 1px solid #ccc; /* 添加底部边框作为分隔线 */
+            padding-bottom: 3px; /* 添加一些底部内边距 */
+        }
+
+        .item2-title:last-child {
+            border-bottom: none; /* 确保最后一个项目没有底部边框 */
+        }
+
+        .item2-title:hover {
+            background-color: #7e7c7c; /* 设置鼠标悬停时的背景颜色 */
+            color: #d9afaf;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div id="navbar">
+        <h1>目标检测系统</h1>
+        <div class="dropdown">
+            <a href="#">
+                <img src="/img/user.png" alt="用户头像" class="avatar" id="avatar">
+            </a>
+            <span name="username" class="name-style" id="username"></span>
+            <div class="dropdown-content" id="dropdown-content">
+<!--                <a href="top.html" id="upload">编辑个人资料</a>-->
+                <a href="/login">退出登录</a>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="left_daohang">
+            <div class="index">
+                <div class="item-title">
+                    <img class="item_img" th:src="@{/img/index.png}">
+                    <span class="item1_text" id="indexClick">首页</span>
+                </div>
+            </div>
+            <div class="detect">
+                <div class="item-title">
+                    <img class="item_img" th:src="@{/img/detect.png}">
+                    <span class="item1_text" id="detectClick">目标检测</span>
+                </div>
+            </div>
+            <div class="history">
+                <div class="item-title">
+                    <img class="item_img" th:src="@{/img/history.png}">
+                    <span class="item1_text" id="historyClick">检测历史</span>
+                </div>
+            </div>
+            <div class="photoManage">
+                <div class="item-title">
+                    <img class="item_img" id="photoManage" th:src="@{/img/photoManage.png}">
+                    <span class="item1_text">图库管理</span>
+                </div>
+            </div>
+            <div class="photoManage-item2">
+                <div class="item2-title">
+                    &nbsp;&nbsp;<img class="item_img" th:src="@{/img/selectPhoto.png}">
+                    <span id="select-photo-click" class="item2_text">图片管理</span>
+                </div>
+                <div class="item2-title">
+                    &nbsp;&nbsp;<img class="item_img" th:src="@{/img/photoManage2.png}">
+                    <span id="manage-photo-click" class="item2_text">类别管理</span>
+                </div>
+            </div>
+        </div>
+        <div id="right">
+            <iframe id="index" th:src="@{/index}"></iframe>
+            <iframe id="detect" th:src="@{/detect}"></iframe>
+            <iframe id="historyList" th:src="@{/historyList}"></iframe>
+            <iframe id="select-photo" th:src="@{/selectPhoto}"></iframe>
+            <iframe id="manage-photo" th:src="@{/photoManage}"></iframe>
+        </div>
+    </div>
+</div>
+</body>
+<script src="/jquery.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var photoManage = document.querySelector(".photoManage");
+        var photoManageItem2 = document.querySelector(".photoManage-item2");
+
+        photoManage.addEventListener("click", function () {
+            if (photoManageItem2.style.display === "none" || photoManageItem2.style.display === "") {
+                photoManageItem2.style.display = "block";
+                setTimeout(function () {
+                    photoManageItem2.style.opacity = "1";
+                }, 10);
+            } else {
+                photoManageItem2.style.opacity = "0";
+                setTimeout(function () {
+                    photoManageItem2.style.display = "none";
+                }, 500);
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        $.post("/getUsername", function(data) {
+                // 获取 span 元素并设置其内容为用户名
+                document.getElementById('username').textContent = data;
+        });
+    });
+
+</script>
+</html>
+
+
